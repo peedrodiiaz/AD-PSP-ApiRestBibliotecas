@@ -2,6 +2,7 @@ package dam.salesianostriana.com.ejerciciobiblioteca.Controller;
 
 import java.util.List;
 
+import dam.salesianostriana.com.ejerciciobiblioteca.errors.GlobalErrorController;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -37,7 +38,7 @@ public class BibliotecaController {
     @Operation(summary = "EndPoint para obtener las bibliotecas")
     @ApiResponse(responseCode = "200", description = "Listado de bibliotecas obtenido con éxito",
         content = @Content(mediaType = "application/json",
-        array = @io.swagger.v3.oas.annotations.media.ArraySchema(schema = @io.swagger.v3.oas.annotations.media.Schema(implementation = ResponseBiblioteca.class)),
+        array = @io.swagger.v3.oas.annotations.media.ArraySchema(schema = @io.swagger.v3.oas.annotations.media.Schema(implementation = GlobalErrorController.class)),
         examples = @ExampleObject(
             value = """
                     [
@@ -88,7 +89,21 @@ public class BibliotecaController {
                             """
                 )
         )),
-        @ApiResponse(responseCode = "404", description = "Biblioteca no encontrada")
+        @ApiResponse(responseCode = "404", description = "Biblioteca no encontrada",
+            content = @Content(mediaType = "application/json",
+            schema = @io.swagger.v3.oas.annotations.media.Schema(implementation = GlobalErrorController.class),
+            examples = @ExampleObject(
+                value = """
+                        {
+                          "type": "https://example.com/probs/library-not-found",
+                          "title": "Bibliotecas no encontrada",
+                          "status": 404,
+                          "detail": "La biblioteca con ID 10 no existe."
+                        }
+                        """
+            )
+
+        ))
     })
     public ResponseEntity <ResponseBiblioteca> getBibliotecaById(@PathVariable Long id) {
         return ResponseEntity.ok(ResponseBiblioteca.of(bibiliotecaService.getById(id)));
@@ -137,7 +152,22 @@ public class BibliotecaController {
                     )
                 )
             ),
-            @ApiResponse(responseCode = "400", description = "Datos de la biblioteca no válidos")
+            @ApiResponse(responseCode = "400", description = "Datos de la biblioteca no válidos",
+            content = @Content(
+                    mediaType = "application/json",
+                    schema = @io.swagger.v3.oas.annotations.media.Schema(implementation = GlobalErrorController.class),
+
+                    examples = @ExampleObject(
+                        value = """
+                                {
+                                  "type": "https://example.com/probs/invalid-library-data",
+                                  "title": "Datos de biblioteca no válidos",
+                                  "status": 400,
+                                  "detail": "El nombre de la biblioteca no puede estar vacío."
+                                }
+                                """
+                    )
+                ))
         }
     )
     public ResponseEntity <ResponseBiblioteca> save(@RequestBody CreateBibliotecaCmd cmd){
@@ -166,7 +196,21 @@ public class BibliotecaController {
                             """
                 )
         )),
-        @ApiResponse(responseCode = "404", description = "Biblioteca no encontrada")
+        @ApiResponse(responseCode = "404", description = "Biblioteca no encontrada",
+        content = @Content(mediaType = "application/json",
+            schema = @io.swagger.v3.oas.annotations.media.Schema(implementation = GlobalErrorController.class),
+            examples = @ExampleObject(
+                value = """
+                        {
+                          "type": "https://example.com/probs/library-not-found",
+                          "title": "Bibliotecas no encontrada",
+                          "status": 404,
+                          "detail": "La biblioteca con ID 10 no existe."
+                        }
+                        """
+            )
+
+        ))
     })
     public ResponseEntity <ResponseBiblioteca> edit(@PathVariable Long id, @RequestBody CreateBibliotecaCmd cmd){
         Biblioteca b = bibiliotecaService.edit(id, cmd);

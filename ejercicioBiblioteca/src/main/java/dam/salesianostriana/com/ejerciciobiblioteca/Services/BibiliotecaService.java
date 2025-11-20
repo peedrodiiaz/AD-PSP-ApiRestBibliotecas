@@ -3,6 +3,7 @@ package dam.salesianostriana.com.ejerciciobiblioteca.Services;
 
 import dam.salesianostriana.com.ejerciciobiblioteca.Dtos.CreateBibliotecaCmd;
 import dam.salesianostriana.com.ejerciciobiblioteca.Model.Biblioteca;
+import dam.salesianostriana.com.ejerciciobiblioteca.errors.InvalidLibraryDataException;
 import dam.salesianostriana.com.ejerciciobiblioteca.errors.LibraryNotFoundException;
 import org.springframework.stereotype.Service;
 
@@ -33,7 +34,7 @@ public class BibiliotecaService {
 
     public Biblioteca save (CreateBibliotecaCmd cmd){
         if (!StringUtils.hasText(cmd.nameBiblioteca())){
-            throw new LibraryNotFoundException();
+            throw new InvalidLibraryDataException();
         }
         return bibliotecaRepository.save(cmd.toEntity());
 
